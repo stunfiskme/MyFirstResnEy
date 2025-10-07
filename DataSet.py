@@ -4,6 +4,7 @@ from torchvision import models, transforms
 from torch.utils.data import Dataset, DataLoader
 
 
+
 # Custom IP102 dataset
 class IP102Dataset(Dataset):
     def __init__(self, split_file, image_root, transform=None):
@@ -36,10 +37,10 @@ class IP102Dataset(Dataset):
 #
 gaussian_blur = transforms.GaussianBlur(kernel_size=(7, 7), sigma=(0.1, 2.0))
 color_jitter = transforms.ColorJitter(
-            brightness=0.5,   # ±x% brightness
-            contrast=0.5,     # ±x% contrast
-            saturation=0.5,   # ±x%saturation
-            hue=0.5          # ±x% hue shift
+            brightness=0.4,   # ±x% brightness
+            contrast=0.4,     # ±x% contrast
+            saturation=0.4,   # ±x%saturation
+            hue=0.2          # ±x% hue shift
 )
 # Transform: resize and convert to tensor
 # Compose: do everything below in order as listed
@@ -53,10 +54,10 @@ transform = transforms.Compose([
 ])
 
 train_transform = transforms.Compose([
-    transforms.Resize((256,256)),        
+    transforms.Resize((256,256)),   
     transforms.RandomHorizontalFlip(p=0.5), 
     transforms.RandomVerticalFlip(p=0.5),
-    transforms.RandomApply([gaussian_blur], 0.5),
+    transforms.RandomApply([gaussian_blur], p=0.5),
     transforms.RandomApply([color_jitter], p=0.5),
     transforms.RandomAdjustSharpness(sharpness_factor=2),
     transforms.ToTensor(),
@@ -77,7 +78,7 @@ training_data = IP102Dataset(
 validation_data = IP102Dataset(
     split_file="data/ip102_v1.1-001/ip102_v1.1/val.txt",
     image_root="data/ip102_v1.1-001/ip102_v1.1/images",
-    transform=train_transform
+    transform=transform
 )
 
 test_data = IP102Dataset(

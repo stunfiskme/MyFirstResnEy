@@ -9,11 +9,24 @@ from DataSet import train_dataloader, validation_dataloader
 from EarlyStopping import EarlyStopping
 from mixUp import mixup_criterion, mixup_data
 
-#use gpu if its there
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using {device} device")
-model = resnet18().to(device)
-#print(model)
+#model
+PATH = './resney.pth'
+
+# Check if file is there
+if os.path.exists(PATH):
+    print("✅ Model accessed successfully.")
+else:
+    print("❌ Failed.")
+
+#load saved model
+model = resnet18()
+model.load_state_dict(torch.load(PATH, weights_only=True))
+
+# Move model to eval mode and correct device
+model.eval()
+model.to(device)
 
 #model setup
 criterion = nn.CrossEntropyLoss()
@@ -21,7 +34,7 @@ optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
 early_stopping = EarlyStopping(patience=3, delta=0.01, verbose=True)
 
 # Training loop
-EPOCHS = 50
+EPOCHS = 25
 for epoch in range(EPOCHS):
     model.train()
     correct = 0
