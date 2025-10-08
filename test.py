@@ -1,7 +1,8 @@
 import os
 import torch
 from tqdm import tqdm
-from model import resnet18
+from resnet_18 import resnet18
+from resnet_34 import resnet34
 from DataSet import test_dataloader
 
 

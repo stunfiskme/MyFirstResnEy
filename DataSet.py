@@ -45,7 +45,7 @@ color_jitter = transforms.ColorJitter(
 # Transform: resize and convert to tensor
 # Compose: do everything below in order as listed
 transform = transforms.Compose([
-    transforms.Resize((256,256)),        
+    transforms.Resize((224,224)),         
     transforms.ToTensor(),
     transforms.Normalize(                          # maps [0,1]→[-1,1]
         mean=(0.5, 0.5, 0.5), 
@@ -54,7 +54,7 @@ transform = transforms.Compose([
 ])
 
 train_transform = transforms.Compose([
-    transforms.Resize((256,256)),   
+    transforms.Resize((224,224)),    
     transforms.RandomHorizontalFlip(p=0.5), 
     transforms.RandomVerticalFlip(p=0.5),
     transforms.RandomApply([gaussian_blur], p=0.5),
@@ -90,16 +90,18 @@ test_data = IP102Dataset(
 # Dataloaders
 train_dataloader = DataLoader(
     training_data,
-    batch_size=16,
-    shuffle=True,)
+    batch_size=32,
+    shuffle=True,
+    pin_memory=True)
 
 validation_dataloader = DataLoader(
     validation_data,
-    batch_size=16,
-    shuffle=True,)
+    batch_size=32,
+    shuffle=True,
+    pin_memory=True)
 
 test_dataloader = DataLoader(
     test_data,
-    batch_size=16,
+    batch_size=32,
     shuffle=False,
 )

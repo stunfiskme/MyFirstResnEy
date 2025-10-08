@@ -4,7 +4,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import os
 from tqdm import tqdm
-from model import resnet18
+from resnet_18 import resnet18
+from resnet_34 import resnet34
 from DataSet import train_dataloader, validation_dataloader
 from EarlyStopping import EarlyStopping
 from mixUp import mixup_criterion, mixup_data
@@ -30,7 +31,7 @@ model.to(device)
 
 #model setup
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+optimizer = optim.AdamW(model.parameters(), lr=0.0001,weight_decay=0.001)
 early_stopping = EarlyStopping(patience=3, delta=0.01, verbose=True)
 
 # Training loop

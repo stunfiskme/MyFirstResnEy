@@ -4,10 +4,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import os
 from tqdm import tqdm
-from model import resnet18
+from resnet_18 import resnet18
+from resnet_34 import resnet34
 from DataSet import train_dataloader, validation_dataloader
 from EarlyStopping import EarlyStopping
 from mixUp import mixup_criterion, mixup_data
+from cutmix import cutmix
 
 #use gpu if its there
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -39,9 +41,9 @@ for epoch in range(EPOCHS):
         labels = labels.to(device)
         # zero the parameter gradients
         optimizer.zero_grad()
-        mixed_x, y_a, y_b, lam = mixup_data(inputs, labels, alpha=0.2)
-        outputs = model(mixed_x)  # forward 
-        loss = mixup_criterion(criterion, outputs, y_a, y_b, lam) #  backward
+        inputs, labels, shuffled_labels, lam = cutmix(inputs, labels)
+        outputs = model(inputs)  # forward 
+        loss = lam * criterion(outputs, labels) + (1 - lam) * criterion(outputs, shuffled_labels)
         loss.backward() # optimize
         optimizer.step() # update weights
         #
