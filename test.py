@@ -3,13 +3,14 @@ import torch
 from tqdm import tqdm
 from resnet_18 import resnet18
 from resnet_34 import resnet34
+from resnet_50 import resnet50
 from DataSet import test_dataloader
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using {device} device")
 #model
-PATH = './resney.pth'
+PATH = './resney50.pth'
 
 # Check if file is there
 if os.path.exists(PATH):
@@ -18,7 +19,7 @@ else:
     print("❌ Failed.")
 
 #load saved model
-net = resnet18()
+net = resnet50()
 net.load_state_dict(torch.load(PATH, weights_only=True))
 
 # Move model to eval mode and correct device

@@ -6,6 +6,7 @@ import os
 from tqdm import tqdm
 from resnet_18 import resnet18
 from resnet_34 import resnet34
+from resnet_50 import resnet50
 from DataSet import train_dataloader, validation_dataloader
 from EarlyStopping import EarlyStopping
 from mixUp import mixup_criterion, mixup_data
@@ -14,13 +15,13 @@ from cutmix import cutmix
 #use gpu if its there
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using {device} device")
-model = resnet18().to(device)
+model = resnet50().to(device)
 #print(model)
 
 #model setup
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
-early_stopping = EarlyStopping(patience=3, delta=0.01, verbose=True)
+optimizer = optim.AdamW(model.parameters(), lr=0.0001,weight_decay=0.001)
+early_stopping = EarlyStopping(patience=5, delta=0.01, verbose=True)
 
 # Training loop
 EPOCHS = 50
@@ -93,7 +94,7 @@ for epoch in range(EPOCHS):
 print('Finished Training')
 
 #save CNN
-PATH = './resney.pth'
+PATH = './resney50.pth'
 torch.save(model.state_dict(), PATH)
 
 # Check if file was created
